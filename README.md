@@ -659,6 +659,13 @@ class Post < ActiveRecord::Base
   end
 end
 
+### Conditional Indexing
+
+In some cases you may not want a particular record to be indexed in Solr.
+Just implement an :index? method in your model that returns a boolean
+telling Sunspot whether to index the record or not.
+
+
 # Retrieving stored contents without hitting the database
 Post.search.hits.each do |hit|
   puts hit.stored(:body)

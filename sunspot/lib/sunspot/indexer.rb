@@ -23,14 +23,14 @@ module Sunspot
     # model<Object>:: the model to index
     #
     def add(model)
-      documents = Util.Array(model).map { |m| prepare(m) }
+      documents = Util.Array(model).map { |m| prepare(m) if index?(m)  }
       if batcher.batching?
         batcher.concat(documents)
       else
         add_documents(documents)
       end
     end
-
+    
     # 
     # Remove the given model from the Solr index
     #
@@ -85,6 +85,15 @@ module Sunspot
 
     def batcher
       @batcher ||= Batcher.new
+    end
+
+    # 
+    # Should we index this model?
+    # If the model has implemented "index?" and the model 
+    # says not to index it, don't index it.
+    # 
+    def index?(model)
+      (not model.respond_to?(:index?)) or model.index?
     end
 
     # 
